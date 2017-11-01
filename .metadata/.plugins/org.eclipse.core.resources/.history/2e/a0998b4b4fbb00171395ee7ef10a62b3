@@ -1,0 +1,156 @@
+package ie.gmit.os;
+
+import java.util.*;
+
+public class ProcessRunner {
+
+	public static void main(String args[]) {
+
+		int num_processes;
+		int i = 0, option = 0;
+		;
+		int burstTime = 0;
+		int quantum = 0;
+		String name = null;
+
+		Scanner in = new Scanner(System.in);
+
+		System.out.println(
+				"Please select which scheduling algorithm you want to use: \n1) Shortest Job First \n2) First Come First Serve \n3) Round Robin");
+		option = in.nextInt();
+
+		System.out.println("Please enter the number of processes:");
+		num_processes = in.nextInt();
+
+		process[] myProcesses = new process[num_processes];
+
+		for (i = 0; i < myProcesses.length; i++) {
+
+			System.out.println("Please enter the burst time of process " + (i + 1) + ":");
+			burstTime = in.nextInt();
+
+			System.out.println("Please enter the name of process " + (i + 1) + ":");
+			name = in.next();
+
+			myProcesses[i] = new process(burstTime, name);
+
+		}
+
+		for (i = 0; i < myProcesses.length; i++) {
+			myProcesses[i].display();
+		}
+
+		Arrays.sort(myProcesses);
+
+		for (i = 0; i < myProcesses.length; i++) {
+			myProcesses[i].display();
+		}
+
+		if (option == 1) {
+			System.out.println("Average wait time(SJF):");
+			averageWaitTimeSjf(myProcesses, num_processes);
+		} else if (option == 2) {
+			averageWaitTimeFcfs(myProcesses, num_processes);
+		} else if (option == 3) {
+			System.out.println("Please enter a quantum: ");
+			quantum = in.nextInt();
+
+			averageWaitTimeRr(myProcesses, num_processes, quantum);
+		}
+	}// main
+
+	public static void averageWaitTimeRr(process[] list, int size, int quantum) {
+
+		int i, j, k, sum =0;
+		int a[]=new int[size];
+		
+		int wt[]=new int[size];
+		int tat[]=new int[size];
+		
+		for (i = 0; i < size; i++)
+			a[i] = list[i].getBurstTime();
+		for (i = 0; i < size; i++)
+			wt[i] = 0;
+		do {
+			for (i = 0; i < size; i++) {
+				if (list[i].getBurstTime() > quantum) {
+					list[i] -= quantum;
+					for (j = 0; j < size; j++) {
+						if ((j != i) && (list[j].getBurstTime() != 0))
+							wt[j] += quantum;
+					}
+				} else {
+					for (j = 0; j < size; j++) {
+						if ((j != i) && (list[j].getBurstTime() != 0))
+							wt[j] += list[i].getBurstTime();
+					}
+					list[i].getBurstTime() = 0;
+				}
+			}
+			sum = 0;
+			for (k = 0; k < size; k++)
+				sum = sum + list[k];
+		} while (sum != 0);
+		for (i = 0; i < size; i++)
+			tat[i] = wt[i] + a[i];
+		System.out.println("process\t\tBT\tWT\tTAT");
+		for (i = 0; i < size; i++) {
+			System.out.println("process" + (i + 1) + "\t" + a[i] + "\t" + wt[i] + "\t" + tat[i]);
+		}
+		float avg_wt = 0;
+		float avg_tat = 0;
+		for (j = 0; j < size; j++) {
+			avg_wt += wt[j];
+		}
+		for (j = 0; j < size; j++) {
+			avg_tat += tat[j];
+		}
+		System.out.println("average waiting time " + (avg_wt / size) + "\n Average turn around time" + (avg_tat / size));
+	}
+
+	
+
+	
+
+	public static void averageWaitTimeFcfs(process[] list, int size) {
+		double total = 0;
+
+		for (int j = 0; j < size; j++) {
+
+			System.out.println("Total: " + total);
+			if (j == 0) {
+				total = list[j].getBurstTime();
+			} else if (size - 1 > j && j >= 1) {
+				total = list[j].getBurstTime() + list[j - 1].getBurstTime() + total;
+
+			}
+		}
+
+		System.out.println(total / size);
+
+	}
+
+	public static void averageWaitTimeSjf(process[] list, int size) {
+
+		int waiting_time[], i, j;
+		double total = 0;
+		waiting_time = new int[size];
+
+		waiting_time[0] = 0;
+		// calculate waiting time
+		for (i = 1; i < size; i++) {
+			waiting_time[i] = 0;
+
+			for (j = 0; j < i; j++)
+				waiting_time[i] += list[j].getBurstTime();
+
+			total += waiting_time[i];
+		}
+
+		float wait_avg = (float) total / size;
+
+		System.out.println("Total: " + total);
+		System.out.println("Avg: " + wait_avg);
+
+	}
+}

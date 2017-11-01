@@ -1,0 +1,39 @@
+package ie.gmit.os;
+
+public class process implements Comparable<process> {
+	
+	int burstTime;
+	private String name;
+	
+	public process(int burstTime, String name)
+	{
+		this.burstTime = burstTime;
+		this.name = name;
+		
+	}
+	
+	public void display()
+	{
+		System.out.println("Process name: " + name + "\nBurst Time:" + burstTime + "\n");
+	}
+	
+	public int getBurstTime()
+	{
+		return burstTime;
+	}
+	
+	
+	@Override
+	public int compareTo(process arg0) {
+		// TODO Auto-generated method stub
+		
+		int result_compare = arg0.burstTime;
+		
+		//ascending order
+		return this.burstTime - result_compare;
+
+		
+	}
+
+
+}
