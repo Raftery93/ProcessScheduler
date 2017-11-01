@@ -132,7 +132,7 @@ public class ProcessRunner {
 			tTime[i] = waitTime[i] + a[i];
 		System.out.println("process\t\tBT\tWT\tTAT");
 		for (i = 0; i < size; i++) {
-			System.out.println(list[i].name + "\t\t" + a[i] + "\t" + waitTime[i] + "\t" + tTime[i]);
+			System.out.println(list[i].name + (i + 1) + "\t" + a[i] + "\t" + waitTime[i] + "\t" + tTime[i]);
 		}
 		for (j = 0; j < size; j++) {
 			totalWaitTime += waitTime[j];
